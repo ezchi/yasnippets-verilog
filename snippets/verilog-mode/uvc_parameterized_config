@@ -1,0 +1,31 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component parameterized configuration
+# key: uvc_p_cfg
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_CONFIG__SV
+ \`define ${1:$(upcase yas-text)}_CONFIG__SV
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_config#(
+  ${2:parameters}
+  )
+  extends uvm_object;
+
+  typedef $1_config#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_config_t;
+  typedef virtual $1_if#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_vif_t;
+  
+   \`uvm_object_param_utils($1_config_t)
+
+   $1_vif_t vif;
+   uvm_active_passive_enum is_active;
+
+   $0
+   
+   function new(string name = "");
+      super.new(name);
+   endfunction
+
+endclass : $1_config
+
+\`endif // $1_CONFIG__SV

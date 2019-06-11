@@ -1,0 +1,19 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component sequencer
+# key: uvc_seqr
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_SEQUENCER__SV
+ \`define ${1:$(upcase yas-text)}_SEQUENCER__SV
+class ${1:`(get-pkg-name (get-buffer-name))`}_sequencer extends uvm_sequencer #($1_item);
+
+   \`uvm_component_utils($1_sequencer)
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+   endfunction : new
+
+endclass : $1_sequencer
+
+\`endif // ${1:$(upcase yas-text)}_SEQUENCER__SV

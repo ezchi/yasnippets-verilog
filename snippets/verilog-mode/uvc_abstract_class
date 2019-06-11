@@ -1,0 +1,25 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVC abstract class
+# key: uvc_abs_cls
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_ABSTRACT_C__SV
+ \`define ${1:$(upcase yas-text)}_ABSTRACT_C__SV
+
+virtual class ${1:`(get-pkg-name (get-buffer-name))`}_abstract_c extends uvm_object;
+
+   function new(string name);
+      super.new(name);
+   endfunction : new
+
+   pure virtual task wait_for_reset();
+   pure virtual task wait_for_reset_release();
+   pure virtual task wait_for_clock(int n);
+   pure virtual task reset_signals();
+   pure virtual task write();
+   pure virtual task read();
+   $0
+endclass : $1_abstract_c
+
+\`endif // \`ifndef ${1:$(upcase yas-text)}_ABSTRACT_C__SV

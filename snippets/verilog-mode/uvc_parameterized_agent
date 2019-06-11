@@ -1,0 +1,58 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component parameterized agent
+# key: uvc_p_agent
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_AGENT__SV
+ \`define ${1:$(upcase yas-text)}_AGENT__SV
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_agent#(
+   ${2:parameters}
+   )
+   extends uvm_agent;
+
+   typedef $1_agent#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_agent_t;
+   typedef $1_sequencer#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_sequencer_t;
+   typedef $1_driver#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_driver_t;
+   typedef $1_monitor#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_monitor_t;
+   typedef $1_config#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_config_t;
+   
+   \`uvm_component_param_utils($1_agent_t)
+   
+   $1_sequencer  seqr;
+   $1_driver     drv;
+   $1_monitor    mon:
+   $1_config     cfg;
+   $0
+   
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+   
+   virtual function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      if (!uvm_config_db#($1_config_t)::get(this, "", "$1_config", cfg))
+        \`uvm_fatal(get_full_name(), {"Configuration must be set for: ", get_full_name(), ".$1_config"})
+      
+      if (cfg.is_active == UVM_ACTIVE) begin
+         // uvm_config_db#($1_config_t)::set(this, "drv", "$1_config", cfg);
+         
+         drv  =    $1_driver_t::type_id::create("drv",  this);
+         seqr = $1_sequencer_t::type_id::create("seqr", this);
+      end
+
+      mon = $1_monitor_t::type_id::create("mon",  this);
+   endfunction : build_phase
+   
+   virtual function void connect_phase(uvm_phase phase);
+      super.connect_phase(phase);
+      
+      if (cfg.is_active == UVM_ACTIVE) begin
+         drv.seq_item_port.connect(seqr.seq_item_export);
+      end
+   endfunction : connect_phase
+   
+endclass : $1_agent
+
+\`endif // \`ifndef ${1:$(upcase yas-text)}_AGENT__SV

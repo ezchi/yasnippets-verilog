@@ -1,0 +1,39 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: interface
+# key: interface
+# --
+
+\`ifndef ${1:$(upcase yas-text)}__SV
+\`define ${1:$(upcase yas-text)}__SV
+
+interface ${1:`(get-buffer-name)`} (input bit clk,
+                                    input bit rst);
+
+   $0
+   
+   // Wait for signals
+   task wait_for_reset();
+      if (!rst)
+        @(posedge rst);
+   endtask : wait_for_reset
+   
+   task wait_for_reset_release();
+      if (rst)
+        @(negedge rst);
+   endtask : wait_for_reset_release
+   
+   task wait_for_clock(int n=1);
+      repeat(n)
+        @(posedge clk);
+   endtask : wait_for_clock
+   
+   task reset_signals();
+      wait_for_reset();
+      // Drive signals to reset value
+      @(posedge clk);
+      wait_for_reset_release();
+   endtask : reset_signals
+
+endinterface : $1
+
+\`endif // \`ifndef ${1:$(upcase yas-text)}__SV

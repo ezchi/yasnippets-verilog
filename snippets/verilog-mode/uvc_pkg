@@ -1,0 +1,26 @@
+# -*- mode: snippet -*-
+# name: UVM Verification Component package
+# key: uvc_pkg
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}__SV
+\`define ${1:$(upcase yas-text)}__SV
+
+package ${1:`(get-buffer-name)`};
+
+   import uvm_pkg::*;
+ \`include "uvm_macros.svh"
+   $0 
+// \`include "${1:$(get-pkg-name yas-text)}_macros.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_item.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_config.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_monitor.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_driver.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_sequencer.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_sequence.svh"
+// \`include "${1:$(get-pkg-name yas-text)}_agent.svh"
+
+endpackage : $1
+
+\`endif // \`ifndef ${1:$(upcase yas-text)}__SV

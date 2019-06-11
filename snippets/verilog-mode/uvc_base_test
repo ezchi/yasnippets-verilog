@@ -1,0 +1,111 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM Component base test
+# key: uvc_base_test
+# group: UVC
+# --
+class $1base_test extends uvm_test;
+   \`uvm_component_utils($1base_test)
+   
+   //optional - declare tb class here or in actual test
+   
+   $2_env $2_env_0;
+   
+   $3_config $3_cfg_0;
+   $4_config $4_cfg_0;
+   
+   // -- uncomment code to illustrate how to enable logging UVM_INFO messages to a file;
+   //   virtual function void end_of_elaboration_phase(uvm_phase phase);
+   //      UVM_FILE fh;
+   //      super.end_of_elaboration_phase(phase);
+   //      fh=$fopen("log.dat");
+   //      uvm_top.set_report_severity_file_hier(UVM_INFO,fh);
+   //      uvm_top.set_report_severity_action_hier(UVM_INFO, UVM_LOG);
+   //   endfunction : end_of_elaboration_phase
+   
+   virtual function void start_of_simulation_phase(uvm_phase phase);
+      super.start_of_simulation_phase(phase);
+      
+      if (get_report_verbosity_level() >= int'(UVM_MEDIUM)) begin
+	     uvm_top.print_topology();
+         //	 this.print();
+	     factory.print();
+      end
+      
+      // Set drain time
+      uvm_test_done.set_drain_time(this, 500);
+   endfunction : start_of_simulation_phase
+   
+   task run_phase(uvm_phase phase);
+      //run_phase of test not needed for this test
+      \`uvm_info(get_type_name(),"RUNNING",UVM_LOW)
+   endtask : run_phase
+   
+   virtual task post_main_phase(uvm_phase phase);
+      // phase.raise_objection(this, "extend simulation time");
+      // #(5us);
+      // \`uvm_info(tID, "Delay 5 us", UVM_LOW)
+      // phase.drop_objection(this, "OK. end this phase");
+   endtask : post_main_phase
+   
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+   
+   function void set_$3_config_params();
+      $3_cfg_0           = new();
+      $3_cfg_0.is_active = UVM_ACTIVE;
+      
+      if (!uvm_config_db#(virtual $3_if)::get(this, "", "$3_vif", $3_cfg_0.vif))
+        \`uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(),".vif"})
+
+      // if (!uvm_config_db#(int unsigned)::get(this, "", "data_width", ctu_cfg_0.data_width))
+      //   \`uvm_fatal(get_full_name(), "Data width is not set")
+      //
+      // if (!uvm_config_db#(int unsigned)::get(this, "", "ctu_size", ctu_cfg_0.ctu_size))
+      //   \`uvm_fatal(get_full_name(), "CTU size is not set")
+      
+      uvm_config_db#($3_config)::set(this, "*", "$3_config", $3_cfg_0);
+   endfunction : set_$3_config_params
+   
+   function void set_$4_config_params();
+      $4_cfg_0           = new();
+      $4_cfg_0.is_active = UVM_ACTIVE;
+      
+      if (!uvm_config_db#(virtual $4_if)::get(this, "", "$4_vif", $4_cfg_0.vif))
+        \`uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(),".vif"})
+      
+      // if (!uvm_config_db#(int unsigned)::get(this, "", "data_width", $4_cfg_0.data_width))
+      //   \`uvm_fatal(get_full_name(), "Data width is not set")
+      // 
+      // if (!uvm_config_db#(int unsigned)::get(this, "", "ctu_size", $4_cfg_0.ctu_size))
+      //   \`uvm_fatal(get_full_name(), "CTU size is not set")
+      
+      uvm_config_db#($4_config)::set(this, "*", "$4_config", $4_cfg_0);
+   endfunction : set_$4_config_params
+   
+   
+   // Initialize the virtual sequence handles
+   function void init_vseq(top_base_vseq vseq);
+      vseq.$3_seqr = $2_env_0.$3_agent_0.seqr;
+      vseq.$4_seqr = $2_env_0.$3_agent_0.seqr;
+   endfunction: init_vseq
+   
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      uvm_config_db#(int)::set(this,"*","recording_detail",UVM_FULL);
+      $2_env_0 = $2_env::type_id::create("$2_env_0",this);
+      
+      set_$3_config_params();
+      set_$4_config_params();
+   endfunction : build_phase
+   
+   //task base_test::all_dropped(uvm_objection objection, uvm_object source_obj, string description, int count);
+   //   super.all_dropped(objection, source_obj, description, count);
+   //
+   //   #(50ns);
+   //   \`uvm_info(tID, "In the all_dropped task", UVM_LOW);
+   //   #(1us);
+   //   \`uvm_info(tID, "Get ready to come out of all_dropped task", UVM_LOW);
+   //endtask : all_dropped
+   
+endclass : base_test

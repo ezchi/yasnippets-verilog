@@ -1,0 +1,46 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component environment
+# key: uvc_env
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_ENV__SV
+ \`define ${1:$(upcase yas-text)}_ENV__SV
+
+// \`include "$1_scoreboard.svh"
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_env extends uvm_env;
+
+   \`uvm_component_utils($1_env)
+
+   // $1_scoreboard $1_scoreboard_0;
+
+   ${2:ingress}_agent $2_agent_0;
+   ${3:egress}_agent $3_agent_0;
+   $0
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+
+   virtual function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      $2_agent_0 = $2_agent::type_id::create("$2_agent_0", this);
+      $3_agent_0 = $3_agent::type_id::create("$3_agent_0", this);
+
+      // $1_scoreboard_0  = $1_scoreboard::type_id::create("$1_scoreboard_0", this);
+   endfunction : build_phase
+
+   function void connect_phase(uvm_phase phase);
+      // Connect slave0 monitor to scoreboard
+      // $2_agent_0.drv.$2_post.connect($1_scoreboard_0.$2_export);
+      // $3_agent_0.drv.$2_post.connect($1_scoreboard_0.$3_export);
+      //      $1_env0.master0.monitor.item_collected_port.connect($1_scoreboard0.mst_item_collected_export);
+      //      $1_env0.slave0.monitor.item_collected_port.connect($1_scoreboard0.slv_item_collected_export);
+
+      //      uvmc_tlm  #($1_mon_pkt)   ::connect($1_env0.master0.monitor.out, "stimulus");
+      //      uvmc_tlm1 #($1_result_pkt)::connect($1_scoreboard0.expect_sc_in, "analysis");
+   endfunction : connect_phase
+
+endclass : $1_env
+
+\`endif // ${1:$(upcase yas-text)}_ENV__SV

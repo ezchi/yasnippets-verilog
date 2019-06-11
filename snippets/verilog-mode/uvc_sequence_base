@@ -1,0 +1,66 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component sequence extended from base_seq
+# key: uvc_seq_base
+# group: UVC
+# --
+class ${1:`(get-pkg-name (get-buffer-name))`}${2:_subname_}sequence extends $1_base_sequence;
+
+   \`uvm_object_utils($1$2sequence)
+
+   $0
+   
+   // Transmition delay between each CTU
+   // rand int unsigned transmit_delay = 0;
+
+   // pixel_sequencer up_sequencer;
+
+   function new(string name = "$1$2sequence");
+      super.new(name);
+   endfunction : new
+
+   task body();
+
+      // pixel_item pixel;
+      // ctu_item   ctu;
+
+      // int unsigned pixel_cnt       = 0;
+      // int unsigned ctu_item_number = 0;
+      // int unsigned data[64*64];
+      // int unsigned ctu_size;
+
+      if (scope_name == "") begin
+         scope_name = get_full_name();
+      end
+      
+      if (!uvm_config_db#($1_config)::get(null, scope_name, "$1_config", cfg)) begin
+         \`uvm_fatal(scope_name, "$1_config is not set")
+      end
+
+      // $1_size = cfg.$1_size;
+      
+      // forever begin
+      //    up_sequencer.get_next_item(pixel);
+      // 
+      //    if (pixel_cnt < ctu_size**2-1) begin
+      //       data[pixel_cnt]  = pixel.data;
+      //       pixel_cnt++;
+      //    end
+      //    else begin
+      //       data[pixel_cnt] = pixel.data;
+      // 
+      //       ctu = ctu_item::type_id::create($sformatf("ctu_item_%d", ++ctu_item_number));
+      //       
+      //       start_item(ctu);
+      //       
+      //       ctu.data  = data;
+      // 
+      //       finish_item(ctu);
+      // 
+      //       pixel_cnt = 0;
+      //    end // else: !if(pixel_cnt < ctu_size-1)
+      // 
+      //    up_sequencer.item_done();
+      // end
+   endtask : body
+endclass : $1$2sequence
+

@@ -1,0 +1,31 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component base virtual sequence
+# key: uvc_base_vseq
+# group: UVC
+# --
+
+class ${1:name_}base_vseq extends uvm_sequence#(uvm_sequence_item);
+   
+   \`uvm_object_utils($1base_vseq)
+   
+   string scope_name = "";
+
+   ${2:upstream}_sequencer $2_seqr;
+   ${3:ingress}_sequencer  $3_seqr;
+   ${4:egress}_sequencer   $4_seqr;
+   $0
+   function new(string name = "$1base_vseq");
+      super.new(name);
+   endfunction : new
+   
+   task pre_body();
+      if(starting_phase != null)
+        starting_phase.raise_objection(this,get_type_name());
+   endtask :  pre_body
+   
+   task post_body();
+      if(starting_phase != null)
+        starting_phase.drop_objection(this,get_type_name());
+   endtask :  post_body
+endclass : $1base_vseq
+

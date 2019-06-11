@@ -1,0 +1,30 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Virtual sequence
+# key: uvc_p_vseq
+# group: UVC_PARAM_VSEQ
+# --
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_vseq${2:_sequence_name} #(
+   ${3:parameters}
+   )
+   extends $1${4:_vseq_base}#(${3:$(make-parameter-assign-list (parse-parameters yas-text))});
+
+   typedef $1_vseq$2#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}$2_t;
+   typedef $1_vseq_sequencer#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}_seqr_t;
+   //   typedef $1_vseq_config#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}_cfg_t;
+   
+   \`uvm_object_param_utils_begin(${1:$(concat (make-abbrev yas-text) "v")}$2_t)
+   \`uvm_object_utils_end
+
+   \`uvm_declare_p_sequencer(${1:$(concat (make-abbrev yas-text) "v")}_seqr_t)
+   
+   //   $1_config_t cfg;
+   $0
+
+   function new(string name = "$1_vseq$2");
+      super.new(name);
+   endfunction : new
+
+   task body();
+   endtask : body
+endclass : $1_vseq$2

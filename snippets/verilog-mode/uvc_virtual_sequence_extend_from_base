@@ -1,0 +1,52 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component virtual sequence extend from base
+# key: uvc_vseq_base
+# group: UVC
+# --
+class ${1:name}_vseq extends $2base_vseq;
+
+   \`uvm_object_utils($1_vseq)
+
+   $0
+   // rand int unsigned pixel_width = 10;
+   // rand int unsigned ctu_size    = 64;
+   // rand int unsigned num_of_ctu  = 1;
+   
+   function new(string name = "$1_vseq");
+      super.new(name);
+   endfunction
+
+   task body();
+      // pixel_sequence      pixel_seq      =      pixel_sequence::type_id::create("pixel_seq");
+      // ctu_single_ctu_seq  ctu_seq        =  ctu_single_ctu_seq::type_id::create("ctu_seq");
+      // ctu_4x4_rd_sequence ctu_4x4_rd_seq = ctu_4x4_rd_sequence::type_id::create("ctu_4x4_rd_seq");
+      // 
+      // if (! ctu_seq.randomize() with {
+      //    
+      // })
+      //   \`uvm_fatal("body", "Can't randomize ctu_single_ctu_seq")
+      // ctu_seq.up_sequencer = pixel_seqr;
+      // 
+      // pixel_seq.randomize() with {
+      //    data_width == local::pixel_width;
+      //    num_of_trans == local::ctu_size ** 2;
+      // };
+      // 
+      // ctu_4x4_rd_seq.randomize() with {
+      //    num_of_trans == local::num_of_ctu;
+      // };
+      // 
+      // fork
+      //    ctu_seq.start(ctu_seqr);
+      // 
+      //    begin
+      //       repeat(num_of_ctu) begin
+      //          pixel_seq.start(pixel_seqr);
+      //          ctu_4x4_rd_seq.start(ctu_4x4_rd_seqr);
+      //       end
+      //    end
+      // join_any
+      
+   endtask: body
+
+endclass: $1_vseq
