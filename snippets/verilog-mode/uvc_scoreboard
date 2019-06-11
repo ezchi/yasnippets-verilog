@@ -1,0 +1,64 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM Component scoreboard
+# key: uvc_scbd
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_SCOREBOARD__SV
+ \`define ${1:$(upcase yas-text)}_SCOREBOARD__SV
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_scoreboard extends uvm_component;
+
+   \`uvm_component_utils($1_scoreboard)
+
+   uvm_analysis_export #(${2:ref}_item) $2_export;
+   uvm_analysis_export #(${3:dut}_item) $3_export;
+   $0
+   uvm_tlm_analysis_fifo #($2_item) $2_fifo;
+   uvm_tlm_analysis_fifo #($3_item) $3_fifo;
+
+   int m_matches, m_mismatches;
+
+   function new(string name = "", uvm_component parent);
+      super.new(name, parent);
+
+      m_matches          = 0;
+      m_mismatches       = 0;
+
+   endfunction // new
+
+   function void build_phase(uvm_phase phase);
+      $2_fifo   = new("$2_fifo", this);
+      $3_fifo   = new("$3_fifo", this);
+      $2_export = new("$2_export", this);
+      $3_export = new("$3_export", this);
+   endfunction : build_phase
+
+   function void connect_phase(uvm_phase phase);
+      $2_export.connect($2_fifo.analysis_export);
+      $3_export.connect($3_fifo.analysis_export);
+   endfunction : connect_phase
+
+   task run_phase(uvm_phase phase);
+      $2_item $2_item_0;
+      $3_item $3_item_0;
+
+      forever begin
+         // $2_fifo.get($2_item_0);
+         // $3_fifo.get($3_item_0);
+      end
+   endtask : run_phase
+
+   function void report_phase( uvm_phase phase );
+      if ($3_fifo.used() + $2_fifo.used() != 0) begin
+         \`uvm_info("Inorder Comparator", $sformatf("$2_fifo size = %0d", $2_fifo.used()), UVM_LOW);
+         \`uvm_info("Inorder Comparator", $sformatf("$3_fifo size = %0d", $3_fifo.used()), UVM_LOW);
+         \`uvm_error("Inorder Comparator", "Not all data are checked")
+      end
+      
+      \`uvm_info("Inorder Comparator", $sformatf("Matches:    %0d", m_matches)   , UVM_LOW);
+      \`uvm_info("Inorder Comparator", $sformatf("Mismatches: %0d", m_mismatches), UVM_LOW);
+ endfunction
+endclass // $1_scoreboard
+
+\`endif //  \`ifndef ${1:$(upcase yas-text)}_SCOREBOARD__SV

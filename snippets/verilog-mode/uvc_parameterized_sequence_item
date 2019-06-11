@@ -1,0 +1,107 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM parameterized sequence item
+# key: uvc_p_seq_item
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_ITEM__SV
+\`define ${1:$(upcase yas-text)}_ITEM__SV
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_item#(
+     ${2:parameters}
+     ) extends uvm_sequence_item;
+
+   typedef $1_item#(
+                    ${2:$(make-parameter-assign-list (parse-parameters yas-text) ",\n")}
+                    ) $1_item_t;
+
+   static int unsigned g_$1_item_id = 0;
+   int unsigned id;
+   
+   rand int unsigned transmit_delay;
+   $0
+
+   \`uvm_object_param_utils_begin($1_item_t)
+      \`uvm_field_int(transmit_delay, UVM_DEFAULT|UVM_UNSIGNED)
+      // \`uvm_field_int($1_item_id, UVM_DEFAULT|UVM_NOCOMPARE|UVM_NO_COPY|UVM_UNSIGNED)
+   \`uvm_object_utils_end
+   
+   function new(string name = $sformatf("$1_item_%0d", ++g_$1_item_id));
+      super.new(name);
+      id = g_$1_item_id;
+   endfunction : new
+
+   // function string convert2string();
+   //    string       s;
+   //    
+   //    s = super.convert2string();
+   // 
+   //    $sformat(s, "%s\n Transmit Delay: %d", s, transmit_delay);
+   //    
+   //    // if (data.size > 8) begin
+   //    //    // Print maximum 8 data: 4 at beginning, 4 at the end
+   //    //    for(int i=0; i<4; i++)
+   //    //      $sformat(s, "%s\n Data[%4d]      : 0x%X", s, i, data[i]);
+   //    // 
+   //    //    $sformat(s, "%s\n ... ", s);
+   //    // 
+   //    //    for(int i=data.size-4; i<data.size; i++)
+   //    //      $sformat(s, "%s\n Data[%4d]      : 0x%X", s, i, data[i]);
+   //    // end
+   //    // else begin
+   //    //    for (int i=0; i<data.size; i++)
+   //    //      $sformat(s, "%s\n Data[%4d]      : 0x%X", s, i, data[i]);
+   //    // end // else: !if(size > 8)
+   //    
+   //    return s;
+   // endfunction : convert2string
+   // 
+   // function void do_print(uvm_printer printer);
+   //    if(printer.knobs.sprint == 0) begin
+   //       $display(convert2string());
+   //    end
+   //    else begin
+   //       printer.m_string = convert2string();
+   //    end
+   // endfunction: do_print
+   // 
+   // function void do_copy(uvm_object rhs);
+   //    $1_item_t rhs_;
+   //    if (!$cast(rhs_, rhs))
+   //      \`uvm_fatal("DO_COPY", "Type Mismatch")
+   //    super.do_copy(rhs);
+   //    transmit_delay  = rhs_.transmit_delay;
+   //    // foreach(data[i])
+   //    //    data[i]  = rhs_.data[i];
+   // endfunction : do_copy
+   // 
+   // 
+   // function void do_record(uvm_recorder recorder);
+   //    \`uvm_record_int("transmit_delay", transmit_delay, $bits(transmit_delay), UVM_UNSIGNED)
+   //    // foreach(data[i])
+   //    //    \`uvm_record_int($sformatf("data[%d]", i), data[i], $bits[data[i]], UVM_HEX)
+   // endfunction : do_record
+   // 
+   // 
+   // // do_compare implementation:
+   // function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+   //    $1_item_t rhs_;
+   //    bit compare_result = 0;
+   // 
+   //    // If the cast fails, comparison has also failed
+   //    // A check for null is not needed because that is done in the compare()
+   //    // function which calls do_compare()
+   //    if(!$cast(rhs_, rhs)) begin
+   //       \`uvm_fatal("DO_COMPARE", "Type mismatch")
+   //    end
+   // 
+   //    compare_result = super.do_compare(rhs, comparer);
+   //    // foreach(data[i])
+   //    //   compare_result  = (compare_result == 1) && (data[i] == rhs_.data[i]);
+   // 
+   //    return compare_result;
+   // endfunction : do_compare
+
+endclass : $1_item
+
+\`endif //  \`ifndef ${1:$(upcase yas-text)}_ITEM__SV

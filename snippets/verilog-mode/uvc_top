@@ -1,0 +1,55 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Top module of UVM testbench
+# key: uvc_top
+# group: UVC
+# --
+
+module ${1:`(get-buffer-name)`};
+   timeunit ${2:1ns};
+   timeprecision ${3:1ns};
+
+   // Parameters
+   parameter int P_CLK_PERIOD = ${4:10};
+
+   import uvm_pkg::*;
+\`include "uvm_macros.svh"
+
+   $0
+   // import top_vseq_pkg::*;
+
+
+// \`include "jpeg_encoder_tb.svh"
+\`include "test_lib.svh"
+
+   string tID = "TOP";
+
+   bit clk;
+   bit rst;
+
+
+   ${5:pkg}_if $5_if_0(clk, rst);
+
+   initial begin
+      uvm_config_db#(virtual $5_if)::set(null,
+                                         "uvm_test_top",
+                                         "$5_if",
+                                         $5_if_0);
+
+      uvm_root::get().set_report_id_action_hier("ILLEGALNAME",UVM_NO_ACTION);
+      run_test();
+   end
+
+
+   always #(P_CLK_PERIOD/2) clk = ~clk;
+
+   initial begin : reset_gen
+      clk = 0;
+      rst = 0;
+      #3;
+      rst = 1; //active high reset for this example
+      #(5*P_CLK_PERIOD);
+      rst = 0;
+   end
+
+
+endmodule : $1

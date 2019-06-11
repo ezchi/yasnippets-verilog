@@ -1,0 +1,75 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component parameterized sequence extended from base_seq
+# key: uvc_p_seq_base
+# group: UVC
+# --
+class ${1:`(get-pkg-name (get-buffer-name))`}${2:_subname_}sequence#(
+   ${3:parameters}
+   )
+   extends $1_base_sequence#(${3:$(make-parameter-assign-list (parse-parameters yas-text))});
+
+   typedef $1$2sequence#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) $1$2sequence_t;
+   typedef $1_config#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_config_t;
+   typedef $1_item#(${3:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_item_t;
+      
+   \`uvm_object_param_utils($1$2sequence_t)
+
+   $0
+   
+   rand int unsigned transmit_delay = 0;
+
+   // pixel_sequencer up_sequencer;
+
+   function new(string name = "$1$2sequence");
+      super.new(name);
+   endfunction : new
+
+   task body();
+
+      int unsigned num_of_trans;
+      // pixel_item pixel;
+      // ctu_item   ctu;
+
+      if (scope_name == "") begin
+         scope_name = get_full_name();
+      end
+      
+      if (!uvm_config_db#($1_config_t)::get(null, scope_name, "$1_config", cfg)) begin
+         \`uvm_fatal(scope_name, "$1_config is not set")
+      end
+
+      repeat(num_of_trans) begin
+         req = $1_item_t::type_id::create("req");
+
+         start_item(req);
+
+         if (! req.randomize with {})
+            `uvm_fatal(scope_name, "Can't randomize req")
+
+         finish_item(req);
+      end
+      //    up_sequencer.get_next_item(pixel);
+      // 
+      //    if (pixel_cnt < ctu_size**2-1) begin
+      //       data[pixel_cnt]  = pixel.data;
+      //       pixel_cnt++;
+      //    end
+      //    else begin
+      //       data[pixel_cnt] = pixel.data;
+      // 
+      //       ctu = ctu_item::type_id::create($sformatf("ctu_item_%d", ++ctu_item_number));
+      //       
+      //       start_item(ctu);
+      //       
+      //       ctu.data  = data;
+      // 
+      //       finish_item(ctu);
+      // 
+      //       pixel_cnt = 0;
+      //    end // else: !if(pixel_cnt < ctu_size-1)
+      // 
+      //    up_sequencer.item_done();
+      // end
+   endtask : body
+endclass : $1$2sequence
+

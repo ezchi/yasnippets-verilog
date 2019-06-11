@@ -1,0 +1,123 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component parameterized driver 
+# key: uvc_p_drv
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_DRIVER__SV
+ \`define ${1:$(upcase yas-text)}_DRIVER__SV
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_driver#(
+   ${2:parameters}
+   )
+   extends uvm_driver #($1_item#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}));
+
+   typedef $1_driver#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_driver_t;
+   typedef $1_config#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_config_t;
+   typedef virtual $1_if#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_vif_t;
+   typedef $1_item#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $1_item_t;
+
+   \`uvm_component_param_utils($1_driver_t)
+
+   $1_config_t cfg;
+
+   uvm_analysis_port #($1_item_t) $1_port;
+   
+   $1_vif_t vif;
+   
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+      $1_port = new("$1_port", this)
+   endfunction : new
+
+   virtual function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+
+      // Get $1_config
+      if(!uvm_config_db#($1_config_t)::get(this, "", "$1_config", cfg))
+        \`uvm_fatal("build", {"$1 configuration is not set: ", get_full_name(),".$1_config"})
+
+   endfunction : build_phase
+
+   function void connect_phase(uvm_phase phase);
+      super.connect_phase(phase);
+      vif = cfg.vif;
+   endfunction : connect_phase
+
+   task run_phase(uvm_phase phase);
+      \`uvm_info("run","RUNNING:",UVM_MEDIUM)
+      vif.wait_for_reset();
+      vif.reset_signals();
+      vif.wait_for_reset_release();
+      fork
+         reset_signals();
+         get_and_drive();
+      join
+   endtask : run_phase
+
+   uvm_phase curr_phase;
+
+   function void phase_started(uvm_phase phase);
+      //get phase to see if any phase specific actions are needed
+      curr_phase = phase;
+   endfunction : phase_started
+
+   task reset_signals();
+      forever begin
+         vif.reset_signals();
+      end
+   endtask : reset_signals
+
+   task get_and_drive();
+      // Wait the first reset process finish
+      vif.wait_for_reset_release();
+      forever
+        begin
+           // Wait reset process finish
+           vif.wait_for_reset_release();
+
+           // Get and Drive
+           seq_item_port.get_next_item(req);
+           \`uvm_info("get_and_drive", $sformatf("REQ = %s", req.convert2string()), UVM_MEDIUM)
+
+           send_to_dut(req);
+           wait_for_respond(req);
+        end
+   endtask : get_and_drive
+
+   task send_to_dut(input $1_item_t req);
+      \`uvm_info("send_to_dut", $sformatf("[subphase is %0s] item sent is: \n%0s",curr_phase.get_name(),req.sprint()),UVM_HIGH)
+      $0
+      // while (i<req.$1_size**2) begin
+      //    vif.din = '0;
+      //    for (int j=0; j<vif.num_of_pixel_per_trans; j++) begin
+      //       vif.din = vif.din << vif.pixel_width;
+      //       for (int m=0; m<vif.pixel_width; m++) 
+      //         vif.din[m] =  req.data[i][m];
+      //       i++;
+      //    end
+      //    vif.dinVld = 1;
+      //    vif.we = 1;
+      //    vif.wait_for_clock();
+      // end
+      // 
+      // vif.dinVld = 0;
+      // vif.we     = 0;
+      // 
+      // vif.wait_for_clock(req.transmit_delay);
+   endtask : send_to_dut
+
+   task wait_for_respond(input $1_item_t req);
+      // $1_item rsp;
+      // 
+      // $cast(rsp, req.clone());
+      // rsp.set_id_info(req);
+      // 
+      // seq_item_port.put(rsp);
+      seq_item_port.item_done();
+      // $1_port.write(req);
+   endtask : wait_for_respond
+
+endclass : $1_driver
+
+\`endif // ${1:$(upcase yas-text)}_DRIVER__SV

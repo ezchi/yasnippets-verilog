@@ -1,0 +1,91 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Test base class
+# key: uvc_test_base
+# group: UVC_TEST
+# --
+class $1base_test extends uvm_test;
+
+   typedef ${2:`(get-pkg-name (get-buffer-name))`}_env ${2:$(make-abbrev yas-text)}_env_t;
+   typedef ${3:name}_uvc_config #($4) ${3:$(make-abbrev yas-text)}_uvc_cfg_t;
+   typedef $3_uvc_if #($4) ${3:$(make-abbrev yas-text)}_uvc_vif_t;
+   $0
+
+   \`uvm_component_utils_begin($1base_test)
+   \`uvm_component_utils_end
+
+   ${2:$(make-abbrev yas-text)}_env_t ${2:$(make-abbrev yas-text)}_env;
+   ${3:$(make-abbrev yas-text)}_uvc_cfg_t ${3:$(make-abbrev yas-text)}_uvc_cfg;
+
+   // -- uncomment code to illustrate how to enable logging UVM_INFO messages to a file;
+   //   virtual function void end_of_elaboration_phase(uvm_phase phase);
+   //      UVM_FILE fh;
+   //      super.end_of_elaboration_phase(phase);
+   //      fh=$fopen("log.dat");
+   //      uvm_top.set_report_severity_file_hier(UVM_INFO,fh);
+   //      uvm_top.set_report_severity_action_hier(UVM_INFO, UVM_LOG);
+   //   endfunction : end_of_elaboration_phase
+   
+   virtual function void start_of_simulation_phase(uvm_phase phase);
+      super.start_of_simulation_phase(phase);
+      
+      if (get_report_verbosity_level() >= int'(UVM_MEDIUM)) begin
+	     uvm_top.print_topology();
+         //	 this.print();
+	     factory.print();
+      end
+      
+      // Set drain time
+      uvm_test_done.set_drain_time(this, 500);
+   endfunction : start_of_simulation_phase
+   
+   task run_phase(uvm_phase phase);
+      //run_phase of test not needed for this test
+      \`uvm_info(get_type_name(),"RUNNING",UVM_LOW)
+   endtask : run_phase
+   
+   virtual task post_main_phase(uvm_phase phase);
+      // phase.raise_objection(this, "extend simulation time");
+      // #(5us);
+      // \`uvm_info(tID, "Delay 5 us", UVM_LOW)
+      // phase.drop_objection(this, "OK. end this phase");
+   endtask : post_main_phase
+   
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+   
+   function void set_$3_uvc_config_params();
+      ${3:$(make-abbrev yas-text)}_uvc_cfg           = new();
+      ${3:$(make-abbrev yas-text)}_uvc_cfg.is_active = UVM_ACTIVE;
+      
+      if (!uvm_config_db#(${3:$(make-abbrev yas-text)_uvc_vif_t})::get(this, "", "$3_uvc_vif", ${3:$(make-abbrev yas-text)}_uvc_cfg.vif))
+        \`uvm_fatal("CFG_ERROR", {"virtual interface must be set for: ", get_full_name(),".$3_uvc_vif"})
+
+      uvm_config_db#(${3:$(make-abbrev yas-text)}_uvc_cfg_t)::set(this, "${2:$(make-abbrev yas-text)}_env.${3:$(make-abbrev yas-text)}_uvc_agent", "cfg", ${3:$(make-abbrev yas-text)}_uvc_cfg);
+   endfunction : set_$3_uvc_config_params
+   
+   
+   // // Initialize the virtual sequence handles
+   // function void init_vseq(top_base_vseq vseq);
+   //    vseq.$3_seqr = $2_env_0.$3_agent_0.seqr;
+   //    vseq.$4_seqr = $2_env_0.$3_agent_0.seqr;
+   // endfunction: init_vseq
+   
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      uvm_config_db#(int)::set(this,"*","recording_detail",UVM_FULL);
+      ${2:$(make-abbrev yas-text)}_env = ${2:$(make-abbrev yas-text)}_env_t::type_id::create("${2:$(makeabbrev yas-text)}_env",this);
+      
+      set_$3_uvc_config_params();
+   endfunction : build_phase
+   
+   //task base_test::all_dropped(uvm_objection objection, uvm_object source_obj, string description, int count);
+   //   super.all_dropped(objection, source_obj, description, count);
+   //
+   //   #(50ns);
+   //   \`uvm_info(tID, "In the all_dropped task", UVM_LOW);
+   //   #(1us);
+   //   \`uvm_info(tID, "Get ready to come out of all_dropped task", UVM_LOW);
+   //endtask : all_dropped
+   
+endclass : $1base_test

@@ -1,0 +1,20 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM virtual sequence package
+# key: uvc_vseq_pkg
+# group: UVC
+# --
+
+\`ifndef ${1:$(upcase yas-text)}_VSEQ_PKG__SV
+\`define ${1:$(upcase yas-text)}_VSEQ_PKG__SV
+
+package ${1:`(get-pkg-name (get-buffer-name))`}_vseq_pkg;
+
+   import uvm_pkg::*;
+   \`include "uvm_macros.svh";
+
+\`include "$2base_vseq.svh"
+\`include "$3vseq_lib.svh"
+
+endpackage : $1_vseq_pkg
+
+\`endif // `\`ifndef ${1:$(upcase yas-text)}_VSEQ_PKG__SV

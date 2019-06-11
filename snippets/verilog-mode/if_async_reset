@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: if_async_reset
+# --
+\`ifdef ${1:ASYNC_RES}
+   always_ff @(posedge ${2:clk} or negedge ${3:res_n}) \`else
+   always_ff @(posedge $2) \`endif
+   begin
+      $0
+   end

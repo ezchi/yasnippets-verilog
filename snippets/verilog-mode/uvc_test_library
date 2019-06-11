@@ -1,0 +1,138 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component test library
+# key: uvc_test_lib
+# group: UVC
+# --
+
+\`ifndef TEST_LIB__SV
+ \`define TEST_LIB__SV
+
+class base_test extends uvm_test;
+   \`uvm_component_utils(base_test)
+
+   //optional - declare tb class here or in actual test
+
+   ${1:env_name}_env $1_env_0;
+
+   ${2:ingress}_config $2_cfg_0;
+   ${3:egress}_config $3_cfg_0;
+
+   // -- uncomment code to illustrate how to enable logging UVM_INFO messages to a file;
+   //   virtual function void end_of_elaboration_phase(uvm_phase phase);
+   //      UVM_FILE fh;
+   //      super.end_of_elaboration_phase(phase);
+   //      fh=$fopen("log.dat");
+   //      uvm_top.set_report_severity_file_hier(UVM_INFO,fh);
+   //      uvm_top.set_report_severity_action_hier(UVM_INFO, UVM_LOG);
+   //   endfunction : end_of_elaboration_phase
+
+   virtual function void start_of_simulation_phase(uvm_phase phase);
+      super.start_of_simulation_phase(phase);
+
+      if (get_report_verbosity_level() >= int'(UVM_MEDIUM)) begin
+	     uvm_top.print_topology();
+         //	 this.print();
+	     factory.print();
+      end
+
+      // Set drain time
+      uvm_test_done.set_drain_time(this, ${4:6000});
+   endfunction : start_of_simulation_phase
+
+   task run_phase(uvm_phase phase);
+      //run_phase of test not needed for this test
+      \`uvm_info(get_type_name(),"RUNNING",UVM_LOW)
+   endtask : run_phase
+
+   virtual task post_main_phase(uvm_phase phase);
+      // phase.raise_objection(this, "extend simulation time");
+      // #(5us);
+      // \`uvm_info(tID, "Delay 5 us", UVM_LOW)
+      // phase.drop_objection(this, "OK. end this phase");
+   endtask : post_main_phase
+
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+
+   function void set_$2_config_params();
+      $2_cfg_0           = new();
+      $2_cfg_0.is_active = UVM_ACTIVE;
+
+      if (!uvm_config_db#(virtual $2_if)::get(this, "", "$2_vif", $2_cfg_0.vif))
+        \`uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(),".vif"})
+
+      uvm_config_db#($2_config)::set(this, "*", "$2_config", $2_cfg_0);
+   endfunction : set_$2_config_params
+
+
+   function void set_$3_config_params();
+      $3_cfg_0           = new();
+      $3_cfg_0.is_active = UVM_ACTIVE;
+
+      if (!uvm_config_db#(virtual $3_if)::get(this, "", "$3_vif", $3_cfg_0.vif))
+        \`uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(),".vif"})
+
+      uvm_config_db#($3_config)::set(this, "*", "$3_config", $3_cfg_0);
+   endfunction : set_$3_config_params
+
+
+   // Initialise the virtual sequence handles
+   // function void init_vseq(top_vseq_base vseq);
+   //    vseq.mcu_seqr = $1_env_0.$2_agent_0.seqr;
+   //    vseq.sof_seqr = $1_env_0.$3_agent_0.seqr;
+   // endfunction: init_vseq
+
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      uvm_config_db#(int)::set(this,"*","recording_detail",UVM_FULL);
+      $1_env_0 = $1_env::type_id::create("$1_env_0",this);
+
+      set_$2_config_params();
+      set_$3_config_params();
+      
+   endfunction : build_phase
+
+   //task base_test::all_dropped(uvm_objection objection, uvm_object source_obj, string description, int count);
+   //   super.all_dropped(objection, source_obj, description, count);
+   //
+   //   #(50ns);
+   //   \`uvm_info(tID, "In the all_dropped task", UVM_LOW);
+   //   #(1us);
+   //   \`uvm_info(tID, "Get ready to come out of all_dropped task", UVM_LOW);
+   //endtask : all_dropped
+
+endclass : base_test
+
+class ${5:first}_test extends base_test;
+   \`uvm_component_utils($5_test)
+
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+
+   virtual function void build_phase(uvm_phase phase);
+      // uvm_config_db#(int)::set(this, "*", "num_of_ctb", 1);
+      // uvm_config_db#(uvm_object_wrapper)::set(this,
+      //                                              "tb_0.macro_coding_unit_agent_0.sequencer.main_phase",
+      //                                      "default_sequence",
+      //                                    macro_coding_unit_single_const_dct_seq#(P_DWIDTH)::type_id::get());
+      // uvm_config_db#(int)::set(this,"tb_0.macro_coding_unit_agent_0.sequencer.*","ctb_size", P_CTB_SIZE);
+      //NEED to set configurations before calling super.build_phase() which creates the verification hierarchy "tb_0"
+      super.build_phase(phase);
+   endfunction : build_phase
+
+   task run_phase(uvm_phase phase);
+      // vseq_SOF1_MCU1#(P_DIN_WIDTH) vseq = vseq_SOF1_MCU1#(P_DIN_WIDTH)::type_id::create("vseq");
+
+      // phase.raise_objection(this);
+      // 
+      // init_vseq(vseq);
+      // vseq.start(null);
+      // 
+      // phase.drop_objection(this);
+   endtask : run_phase
+
+endclass : $5_test
+
+\`endif // \`ifndef TEST_LIB__SV

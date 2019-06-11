@@ -1,0 +1,36 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVM component test with base
+# key: uvc_test_base
+# group: UVC
+# --
+class ${1:single}_test extends $2base_test;
+   \`uvm_component_utils($1_test)
+
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction : new
+
+   virtual function void build_phase(uvm_phase phase);
+      // uvm_config_db#(int)::set(this, "*", "num_of_ctb", 1);
+      // uvm_config_db#(uvm_object_wrapper)::set(this,
+      //                                              "tb_0.macro_coding_unit_agent_0.sequencer.main_phase",
+      //                                      "default_sequence",
+      //                                    macro_coding_unit_single_const_dct_seq#(P_DWIDTH)::type_id::get());
+      // uvm_config_db#(int)::set(this,"tb_0.macro_coding_unit_agent_0.sequencer.*","ctb_size", P_CTB_SIZE);
+      //NEED to set configurations before calling super.build_phase() which creates the verification hierarchy "tb_0"
+      super.build_phase(phase);
+   endfunction : build_phase
+
+   task run_phase(uvm_phase phase);
+      $0
+      // vseq_SOF1_MCU1#(P_DIN_WIDTH) vseq = vseq_SOF1_MCU1#(P_DIN_WIDTH)::type_id::create("vseq");
+
+      // phase.raise_objection(this);
+      // 
+      // init_vseq(vseq);
+      // vseq.start(null);
+      // 
+      // phase.drop_objection(this);
+   endtask : run_phase
+
+endclass : $1_test

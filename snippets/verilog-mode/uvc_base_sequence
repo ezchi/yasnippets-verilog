@@ -1,0 +1,32 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: UVC base sequence
+# key: uvc_base_seq
+# group: UVC
+# --
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_base_sequence extends uvm_sequence#(${2:$1}_item);
+
+   \`uvm_object_utils($1_base_sequence)
+
+   string scope_name = "";
+
+   // Get data_width from config
+   $1_config cfg;
+   $0
+   // declare a p_sequencer pointer to sequencer (optional if needed)
+   // \`uvm_declare_p_sequencer(uvm_sequencer#($1_item))
+
+   function new(string name = "$1_base_sequence");
+      super.new(name);
+   endfunction : new
+
+   task pre_body();
+      if(starting_phase != null)
+        starting_phase.raise_objection(this,get_type_name());
+   endtask :  pre_body
+
+   task post_body();
+      if(starting_phase != null)
+        starting_phase.drop_objection(this,get_type_name());
+   endtask :  post_body
+endclass : $1_base_sequence

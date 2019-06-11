@@ -1,0 +1,38 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Virtual sequence base class
+# key: uvc_p_vseq_base
+# group: UVC_PARAM_VSEQ
+# --
+
+class ${1:`(get-pkg-name (get-buffer-name))`}_vseq_base#(
+   ${2:parameters}
+   )
+   extends uvm_sequence#(uvm_sequence_item);
+
+   typedef $1_vseq_base#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}_base_t;
+   typedef $1_vseq_sequencer#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}_seqr_t;
+   typedef $1_vseq_config#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) ${1:$(concat (make-abbrev yas-text) "v")}_cfg_t;
+   //   typedef $3_item#(${2:$(make-parameter-assign-list (parse-parameters yas-text))}) $3_item_t;
+   
+   \`uvm_object_param_utils(${1:$(concat (make-abbrev yas-text) "v")}_base_t)
+
+   $1_cfg_t cfg;
+   $0
+
+   // declare a p_sequencer pointer to sequencer (optional if needed)
+   \`uvm_declare_p_sequencer(${1:$(concat (make-abbrev yas-text) "v")}_seqr_t)
+
+   function new(string name = "$1_vseq_base");
+      super.new(name);
+   endfunction : new
+
+   // task pre_body();
+   //    if(starting_phase != null)
+   //      starting_phase.raise_objection(this,get_type_name());
+   // endtask :  pre_body
+   // 
+   // task post_body();
+   //    if(starting_phase != null)
+   //      starting_phase.drop_objection(this,get_type_name());
+   // endtask :  post_body
+endclass : $1_vseq_base

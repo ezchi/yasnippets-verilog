@@ -1,0 +1,4 @@
+#+title: YASnippets-verilog
+
+* Overview
+  This is just my personal collection of snippets for verilog mode.
