@@ -3,6 +3,7 @@
 ;; Copyright (C) 2019 Enze Chi
 
 ;; Author: Enze Chi
+;; Version: 0.2.1
 ;; URL: https://github.com/ezchi/yasnippets-verilog.git
 ;; Package-Requires: ((yasnippet "0.8.0"))
 
