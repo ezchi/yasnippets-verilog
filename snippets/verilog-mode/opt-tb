@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: opt-tb
+# --
+module ${1:}_tb;
+    import tests::*;
+
+    logic clk = 0;
+
+    $0
+
+    $1_wrapper dut(.*);
+    $1_tests   tests(.*);
+
+    always #0.5 clk = ~clk;
+
+    initial begin
+        #${2}us;
+        print_test_timeout(`__FILE__);
+        $finish;
+    end
+endmodule : $1_tb

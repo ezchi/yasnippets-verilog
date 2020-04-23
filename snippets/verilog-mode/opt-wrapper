@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: opt-wrapper
+# --
+module ${1:}_wrapper(
+    input logic clk,
+    $0
+);
+
+    import $1_pkg::*;
+
+    $1
+    inner(
+        .iClk(clk),
+    );
+
+    always_comb begin
+    end
+endmodule : $1_wrapper

@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: opt-pkg
+# --
+package ${1:}_pkg;
+    import tests::*;
+
+    typedef struct {
+        $0
+    } result_t;
+
+class $1_test extends test_base#(received_t);
+    function new(string filename);
+        super.new(filename);
+    endfunction : new
+
+    function automatic bit do_compare(input received_t expected, input received_t received, output string diffs);
+        bit ok;
+
+        return ok;
+    endfunction : do_compare
+endclass : $1_test
+endpackage: $1_pkg

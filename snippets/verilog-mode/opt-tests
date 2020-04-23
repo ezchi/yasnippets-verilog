@@ -1,0 +1,45 @@
+# -*- mode: snippet -*-
+# name: opt-tests
+# --
+module ${1:}_tests(
+    input  logic clk,
+    output logic rst,
+    $0
+);
+
+    import tests::*;
+    import $1_pkg::*;
+
+    $1_test test = new(`__FILE__);
+
+    initial begin : TESTS
+        setup();
+        teardown();
+
+        delay_clk(2);
+        test.print_result();
+        $finish;
+    end
+
+    always begin : COMPARE_RESULTS
+    end
+
+    task delay_clk (int n = 1);
+        repeat(n) @(posedge clk);
+    endtask : delay_clk
+
+    task reset();
+        rst = 1'b1;
+        delay_clk(5);
+        rst = 1'b0;
+    endtask : reset
+
+    task setup();
+    endtask : setup
+
+    task teardown();
+        wait(test.expect_queue.size() == 0);
+        test.teardown_expect_queue();
+    endtask : teardown
+
+endmodule : $1_tests
