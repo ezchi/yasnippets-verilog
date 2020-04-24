@@ -6,7 +6,7 @@ package ${1:}_pkg;
 
     typedef struct {
         $0
-    } result_t;
+    } received_t;
 
 class $1_test extends test_base#(received_t);
     function new(string filename);
