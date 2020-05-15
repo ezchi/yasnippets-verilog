@@ -24,14 +24,21 @@ module ${1:}_tests(
     always begin : COMPARE_RESULTS
     end
 
+    always begin : early-terminate
+        wait(test.number_of_failures > 0);
+        delay_clk(2);
+        $finish;
+    end
+
     task delay_clk (int n = 1);
         repeat(n) @(posedge clk);
     endtask : delay_clk
 
     task reset();
-        rst = 1'b1;
+        rst <= 1'b1;
         delay_clk(5);
-        rst = 1'b0;
+        rst <= 1'b0;
+        delay_clk(2);
     endtask : reset
 
     task setup();

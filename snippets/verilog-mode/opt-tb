@@ -4,7 +4,7 @@
 module ${1:}_tb;
     import tests::*;
 
-    logic clk = 0;
+    logic clk;
 
     $0
 
@@ -14,6 +14,8 @@ module ${1:}_tb;
     always #0.5 clk = ~clk;
 
     initial begin
+        clk <= 1'b1;
+
         #${2}us;
         print_test_timeout(`__FILE__);
         $finish;
