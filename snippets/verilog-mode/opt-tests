@@ -24,7 +24,7 @@ module ${1:}_tests(
     always begin : COMPARE_RESULTS
     end
 
-    always begin : early-terminate
+    always begin : EARLY_TERMINATE
         wait(test.number_of_failures > 0);
         delay_clk(2);
         $finish;
