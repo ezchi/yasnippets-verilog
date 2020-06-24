@@ -5,6 +5,7 @@ module ${1:}_tb;
     import tests::*;
 
     logic clk;
+    logic rst;
 
     $0
 
