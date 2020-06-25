@@ -4,7 +4,7 @@
 interface ${1:}_intf(input logic clk);
     $0
 
-    task delay_clk(int n = 1) begin
+    task delay_clk(int n = 1);
         repeat(n) @(posedge clk);
     endtask : delay_clk
 endinterface : $1_intf
