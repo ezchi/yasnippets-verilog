@@ -1,7 +1,9 @@
 # -*- mode: snippet -*-
 # name: opt-tb
 # --
-module ${1:}_tb;
+module ${1:}_tb#(
+    parameter string TEST_NAME = "default"
+);
     import tests::*;
 
     logic clk;
@@ -18,7 +20,7 @@ module ${1:}_tb;
         clk <= 1'b1;
 
         #${2}us;
-        print_test_timeout(`__FILE__);
+        print_test_timeout({`__FILE__, ":", TEST_NAME});
         $finish;
     end
 endmodule : $1_tb

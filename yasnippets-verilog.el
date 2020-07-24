@@ -1,4 +1,4 @@
-;;; yasnippet-verilog.el --- Yasnippets for Verilog
+;;; yasnippets-verilog.el --- Yasnippets for Verilog
 
 ;; Copyright (C) 2019 Enze Chi
 

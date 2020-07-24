@@ -1,7 +1,9 @@
 # -*- mode: snippet -*-
 # name: opt-tests
 # --
-module ${1:}_tests(
+module ${1:}_tests#(
+    parameter string TEST_NAME = "default"
+) (
     input  logic clk,
     output logic rst,
     $0
@@ -10,7 +12,7 @@ module ${1:}_tests(
     import tests::*;
     import $1_pkg::*;
 
-    $1_test test = new(`__FILE__);
+    $1_test test = new({`__FILE__, ":", TEST_NAME});
 
     initial begin : TESTS
         setup();

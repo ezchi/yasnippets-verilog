@@ -6,14 +6,14 @@ package ${1:}_pkg;
 
     typedef struct {
         $0
-    } received_t;
+    } $1_expected_t;
 
-class $1_test extends test_base#(received_t);
+class $1_test extends test_base#($1_expected_t);
     function new(string filename);
         super.new(filename);
     endfunction : new
 
-    function automatic bit do_compare(input received_t expected, input received_t received, output string diffs);
+    function automatic bit do_compare(input $1_expected_t expected, input $1_expected_t received, output string diffs);
         bit ok;
 
         return ok;
