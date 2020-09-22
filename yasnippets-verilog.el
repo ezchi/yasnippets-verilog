@@ -3,6 +3,7 @@
 ;; Copyright (C) 2019 Enze Chi
 
 ;; Author: Enze Chi
+;; Version: 0.2.1
 ;; URL: https://github.com/ezchi/yasnippets-verilog.git
 ;; Package-Requires: ((yasnippet "0.8.0"))
 
@@ -17,14 +18,15 @@
 
 ;;;###autoload
 (defun yasnippets-verilog-initialize ()
+  "Add yasnippets-verilog directory to YAS."
   (let ((snip-dir (expand-file-name "snippets" yasnippets-verilog-root)))
     (when (boundp 'yas-snippet-dirs)
       (add-to-list 'yas-snippet-dirs snip-dir t))
     (yas-load-directory snip-dir)))
 
 ;;;###autoload
-(eval-after-load 'yasnippet
-  '(yasnippets-verilog-initialize))
+(with-eval-after-load 'yasnippet
+  (yasnippets-verilog-initialize))
 
 (provide 'yasnippets-verilog)
 
