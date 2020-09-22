@@ -6,26 +6,27 @@
 
 (defun get-buffer-name ()
   "Get buffer base name."
-  (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))
+  (file-name-base (buffer-file-name)))
 
 (defconst pkg-suffix
   (regexp-opt '(
-                "item"
+                "abs_if"
+                "abs_if_pkg"
+                "agent"
                 "config"
-                "macros"
                 "driver"
+                "env"
+                "if"
+                "item"
+                "macros"
                 "monitor"
-                "sequencer"
-                "sequence"
+                "pkg"
                 "scoreboard"
                 "seq_lib"
+                "sequence"
+                "sequencer"
+                "tb"
                 "test_lib"
-                "agent"
-                "pkg"
-                "abs_if"
-                "if"
-                "abs_if_pkg"
-                "env"
                 "vseq"
                 ) nil))
 

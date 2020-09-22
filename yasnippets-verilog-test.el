@@ -10,7 +10,8 @@
   (should (equal (get-pkg-name "test_abs_if") "test"))
   (should (equal (get-pkg-name "test_abs_if_pkg") "test"))
   (should (equal (get-pkg-name "test_agent_pkg") "test"))
-  (should (equal (get-pkg-name "test_pkg") "test")))
+  (should (equal (get-pkg-name "test_pkg") "test"))
+  (should (equal (get-pkg-name "test_foo_bar_tb") "test_foo_bar")))
 
 (ert-deftest test-parse-parameters ()
   "Tests parsing parameter string."
