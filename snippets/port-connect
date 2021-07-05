@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: port-connect 
+# key: .pc
+# --
+
+.$1($1)$0
